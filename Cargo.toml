@@ -1,0 +1,13 @@
+[package]
+name = "nix-lament"
+version = "0.1.0"
+edition = "2021"
+authors = ["Dmitry Bogatov <kaction@disroot.org>"]
+description = "Yet another nixpkgs linter"
+license = "AGPL-3.0"
+repository = ""
+rust-version = "1.70.0"
+readme = "README.md"
+exclude = ["flake.nix", "flake.lock", ".github/"]
+
+[dependencies]
