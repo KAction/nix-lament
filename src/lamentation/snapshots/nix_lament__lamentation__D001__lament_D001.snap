@@ -1,0 +1,12 @@
+---
+source: src/lamentation/D001.rs
+expression: "w.lament(&tree, &content[..])"
+---
+[
+    Lamentation {
+        line: 4,
+        column: 2,
+        kind: D001,
+        message: "Call to `mkDerivation' has both `name' and `pname' arguments.",
+    },
+]

@@ -14,3 +14,4 @@ exclude = ["flake.nix", "flake.lock", ".github/"]
 tree-sitter = "0.20.10"
 tree-sitter-nix = "0.0.1"
 anyhow = "1.0"
+insta = "1.34"

@@ -9,6 +9,7 @@ pub enum Kind {
 }
 
 // Struct that describes location of the problematic code.
+#[derive(Debug)]
 pub struct Lamentation {
     // By convention, lines are counted from one, columns -- from zero.
     pub line: usize,

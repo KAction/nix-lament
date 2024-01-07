@@ -43,3 +43,15 @@ pub static MODULE: types::Module = types::Module {
     kinds: &[types::Kind::D001],
     new,
 };
+
+#[test]
+fn test_lament_D001() {
+    let content = include_bytes!("../../t/D001.nix");
+    let mut parser = ts::Parser::new();
+    parser.set_language(nix::language()).unwrap();
+
+    let tree = parser.parse(&content, None).unwrap();
+    let w = new().unwrap();
+
+    insta::assert_debug_snapshot!(w.lament(&tree, &content[..]));
+}
