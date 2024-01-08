@@ -4,6 +4,7 @@ use tree_sitter_nix as nix;
 
 mod lamentation;
 mod types;
+mod util;
 
 fn main() -> anyhow::Result<()> {
     let language = nix::language();

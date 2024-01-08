@@ -1,3 +1,4 @@
+use crate::util::node_text;
 use crate::types;
 use anyhow;
 use tree_sitter as ts;
@@ -11,10 +12,6 @@ fn new() -> anyhow::Result<Box<dyn types::Lament>> {
     Ok(Box::new(I {
         query: ts::Query::new(nix::language(), include_str!("PY001.scm"))?,
     }))
-}
-
-fn node_text<'a>(node: &ts::Node, content: &'a [u8]) -> &'a str {
-    std::str::from_utf8(&content[node.start_byte()..node.end_byte()]).unwrap()
 }
 
 impl types::Lament for I {
