@@ -1,0 +1,12 @@
+---
+source: src/lamentation/PY001.rs
+expression: "w.lament(&tree, &content[..])"
+---
+[
+    Lamentation {
+        line: 8,
+        column: 4,
+        kind: PY001,
+        message: "Explicit `pythonImportsCheckHook` in `nativeBuildInputs` of `buildPythonPackage' call.",
+    },
+]

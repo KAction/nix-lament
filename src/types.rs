@@ -6,6 +6,7 @@ use tree_sitter as ts;
 #[derive(Debug)]
 pub enum Kind {
     D001, // Both "pname" and "name" in a call to "mkDerivation"
+    PY001, // Explicit "pythonImportsCheckHook" in nativeBuildInputs
 }
 
 // Struct that describes location of the problematic code.
