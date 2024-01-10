@@ -1,16 +1,17 @@
 use anyhow;
 use tree_sitter as ts;
+use serde::Serialize;
 
 /// Kind of the lamentations. This is necessary to run only requested subset of supported
 /// lamentations.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub enum Kind {
     D001,  // Both "pname" and "name" in a call to "mkDerivation"
     PY001, // Explicit "pythonImportsCheckHook" in nativeBuildInputs
 }
 
 // Struct that describes location of the problematic code.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Lamentation {
     // By convention, lines are counted from one, columns -- from zero.
     pub line: usize,
