@@ -1,13 +1,8 @@
 use crate::types;
-use crate::util::{node_text, PerMatch};
-use anyhow;
-use tree_sitter as ts;
+use crate::util::node_text;
+use crate::via_match;
 
-fn new() -> anyhow::Result<Box<dyn types::Lament>> {
-    PerMatch::new(include_str!("D001.scm"), handler)
-}
-
-fn handler(m: &ts::QueryMatch, content: &[u8]) -> Option<types::Lamentation> {
+via_match!(D001, |m, content| {
     let func = node_text(&m.captures[0].node, content);
     let n2 = m.captures[2]; // second name|pname match
     let point = n2.node.start_position();
@@ -19,15 +14,11 @@ fn handler(m: &ts::QueryMatch, content: &[u8]) -> Option<types::Lamentation> {
         column: point.column,
         message,
     })
-}
-
-pub static MODULE: types::Module = types::Module {
-    kinds: &[types::Kind::D001],
-    new,
-};
+});
 
 #[test]
 fn test_lament_D001() {
+    use tree_sitter as ts;
     use tree_sitter_nix as nix;
 
     let content = include_bytes!("../../t/D001.nix");

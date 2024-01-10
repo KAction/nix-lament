@@ -36,3 +36,15 @@ impl types::Lament for PerMatch {
         out
     }
 }
+
+#[macro_export]
+macro_rules! via_match (
+    ($name:ident, $handler:expr) => {
+        fn new() -> anyhow::Result<Box<dyn crate::types::Lament>> {
+            crate::util::PerMatch::new(include_str!(concat!(stringify!($name), ".scm")), $handler)
+        }
+        pub static MODULE: crate::types::Module = crate::types::Module {
+            new, kinds: &[crate::types::Kind::$name],
+        };
+    };
+);
