@@ -1,39 +1,24 @@
 use crate::types;
-use crate::util::node_text;
+use crate::util::{node_text, PerMatch};
 use anyhow;
 use tree_sitter as ts;
-use tree_sitter_nix as nix;
-
-struct I {
-    query: ts::Query,
-}
 
 fn new() -> anyhow::Result<Box<dyn types::Lament>> {
-    Ok(Box::new(I {
-        query: ts::Query::new(nix::language(), include_str!("D001.scm"))?,
-    }))
+    PerMatch::new(include_str!("D001.scm"), handler)
 }
 
-impl types::Lament for I {
-    fn lament(&self, tree: &ts::Tree, content: &[u8]) -> Vec<types::Lamentation> {
-        let mut out = vec![];
-        let mut cursor = ts::QueryCursor::new();
+fn handler(m: &ts::QueryMatch, content: &[u8]) -> Option<types::Lamentation> {
+    let func = node_text(&m.captures[0].node, content);
+    let n2 = m.captures[2]; // second name|pname match
+    let point = n2.node.start_position();
+    let message = format!("Call to `{}' has both `name' and `pname' arguments.", func);
 
-        for m in cursor.matches(&self.query, tree.root_node(), content) {
-            let func = node_text(&m.captures[0].node, content);
-            let n2 = m.captures[2]; // second name|pname match
-            let point = n2.node.start_position();
-            let message = format!("Call to `{}' has both `name' and `pname' arguments.", func);
-
-            out.push(types::Lamentation {
-                kind: types::Kind::D001,
-                line: point.row,
-                column: point.column,
-                message,
-            })
-        }
-        out
-    }
+    Some(types::Lamentation {
+        kind: types::Kind::D001,
+        line: point.row,
+        column: point.column,
+        message,
+    })
 }
 
 pub static MODULE: types::Module = types::Module {
@@ -43,6 +28,8 @@ pub static MODULE: types::Module = types::Module {
 
 #[test]
 fn test_lament_D001() {
+    use tree_sitter_nix as nix;
+
     let content = include_bytes!("../../t/D001.nix");
     let mut parser = ts::Parser::new();
     parser.set_language(nix::language()).unwrap();

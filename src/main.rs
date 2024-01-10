@@ -23,7 +23,10 @@ fn main() -> anyhow::Result<()> {
 
         for w in &workers {
             for e in w.lament(&tree, &content) {
-                println!("{}:{}:{}: {:?} {}", &fname, e.line, e.column, e.kind, e.message);
+                println!(
+                    "{}:{}:{}: {:?} {}",
+                    &fname, e.line, e.column, e.kind, e.message
+                );
             }
         }
 

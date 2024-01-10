@@ -5,7 +5,7 @@ use tree_sitter as ts;
 /// lamentations.
 #[derive(Debug)]
 pub enum Kind {
-    D001, // Both "pname" and "name" in a call to "mkDerivation"
+    D001,  // Both "pname" and "name" in a call to "mkDerivation"
     PY001, // Explicit "pythonImportsCheckHook" in nativeBuildInputs
 }
 
