@@ -1,6 +1,7 @@
 use anyhow;
-use tree_sitter as ts;
 use serde::Serialize;
+use tree_sitter as ts;
+use tree_sitter_nix as nix;
 
 /// Kind of the lamentations. This is necessary to run only requested subset of supported
 /// lamentations.
@@ -20,14 +21,36 @@ pub struct Lamentation {
     pub message: String,
 }
 
-// "lament" is a method, not plain function so we have space for
-// once-per-module initialization (e.g parsing queries).
-pub trait Lament {
-    fn lament(&self, tree: &ts::Tree, content: &[u8]) -> Vec<Lamentation>;
+pub type Handler = fn(m: &ts::QueryMatch, content: &[u8]) -> Option<Lamentation>;
+pub struct PerMatch {
+    query: ts::Query,
+    handler: Handler,
+}
+
+impl PerMatch {
+    pub fn new(query: &'static str, handler: Handler) -> anyhow::Result<Self> {
+        Ok(Self {
+            query: ts::Query::new(nix::language(), query)?,
+            handler,
+        })
+    }
+
+    pub fn lament(&self, tree: &ts::Tree, content: &[u8]) -> Vec<Lamentation> {
+        let mut out = vec![];
+        let mut cursor = ts::QueryCursor::new();
+
+        for m in cursor.matches(&self.query, tree.root_node(), content) {
+            match (self.handler)(&m, content) {
+                Some(x) => out.push(x),
+                None => (),
+            }
+        }
+        out
+    }
 }
 
 #[derive(Clone, Copy)]
 pub struct Module {
     pub kinds: &'static [Kind],
-    pub new: fn() -> anyhow::Result<Box<dyn Lament>>,
+    pub new: fn() -> anyhow::Result<PerMatch>,
 }
