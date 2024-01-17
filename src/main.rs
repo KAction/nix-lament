@@ -22,8 +22,11 @@ fn main() -> anyhow::Result<()> {
     let args = Arc::new(args);
     let workers = Arc::new(workers);
 
+    let thread_max = 8;
+    let thread_count = if args.len() < thread_max { args.len() } else { thread_max };
+
     let mut threads = vec![];
-    for _ in 0..8 {
+    for _ in 0..thread_count {
         let index = Arc::clone(&index);
         let args = Arc::clone(&args);
         let errcode = Arc::clone(&errcode);
