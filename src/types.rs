@@ -9,6 +9,7 @@ use tree_sitter_nix as nix;
 pub enum Kind {
     D001,  // Both "pname" and "name" in a call to "mkDerivation"
     PY001, // Explicit "pythonImportsCheckHook" in nativeBuildInputs
+    RFC0169, // Naming of the feature parameters
 }
 
 // Struct that describes location of the problematic code.

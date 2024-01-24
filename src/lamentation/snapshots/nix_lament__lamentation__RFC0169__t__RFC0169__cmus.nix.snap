@@ -1,0 +1,9 @@
+---
+source: src/lamentation/RFC0169.rs
+expression: "w.lament(&tree, &content[..])"
+---
+- line: 3
+  column: 2
+  kind: RFC0169
+  message: "Deprecated feature parameter `alsaSupport', use `with_alsa` name instead"
+

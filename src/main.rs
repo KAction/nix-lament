@@ -23,7 +23,11 @@ fn main() -> anyhow::Result<()> {
     let workers = Arc::new(workers);
 
     let thread_max = 8;
-    let thread_count = if args.len() < thread_max { args.len() } else { thread_max };
+    let thread_count = if args.len() < thread_max {
+        args.len()
+    } else {
+        thread_max
+    };
 
     let mut threads = vec![];
     for _ in 0..thread_count {
