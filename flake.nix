@@ -40,8 +40,17 @@ outputs = { self, nixpkgs, fenix, flake-utils, crane, ... }:
         craneLib = crane.lib.${system}.overrideToolchain toolchain;
       in
       let
+        source = nixpkgs.lib.cleanSourceWith {
+          src = craneLib.path ./.;
+          filter = path: type:
+            craneLib.filterCargoSources path type ||
+            builtins.match ".*scm" path != null ||
+            builtins.match ".*snap" path != null ||
+            builtins.match ".*nix" path != null;
+        };
+
         commonArgs = {
-          src = craneLib.cleanCargoSource (craneLib.path ./.);
+          src = source;
           buildInputs = [ ] ++ optionals pkgs.stdenv.isDarwin [
             pkgs.libiconv
           ];
