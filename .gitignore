@@ -1,2 +1,4 @@
 /target
 /.direnv
+src/lamentation/RFC0169.scm
+src/lamentation/RFC0169_autogen.rs

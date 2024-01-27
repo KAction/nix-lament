@@ -5,5 +5,7 @@ mod D001;
 mod PY001;
 #[allow(non_snake_case)]
 mod RFC0169;
+#[allow(non_snake_case)]
+mod RFC0169_autogen;
 
 pub static MODULES: &[types::Module] = &[D001::MODULE, PY001::MODULE, RFC0169::MODULE];

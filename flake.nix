@@ -46,6 +46,9 @@ outputs = { self, nixpkgs, fenix, flake-utils, crane, ... }:
             craneLib.filterCargoSources path type ||
             builtins.match ".*scm" path != null ||
             builtins.match ".*snap" path != null ||
+            builtins.match ".*json" path != null ||
+            builtins.match ".*py" path != null ||
+            builtins.match ".*Makefile" path != null ||
             builtins.match ".*nix" path != null;
         };
 
@@ -63,6 +66,10 @@ outputs = { self, nixpkgs, fenix, flake-utils, crane, ... }:
           cargoClippyExtraArgs = "--all-targets -- --deny warnings";
         });
         cargoPackage = craneLib.buildPackage (commonArgs // {
+          postPatch = ''
+            make autogen
+          '';
+          nativeBuildInputs = [ pkgs.python3 ];
           inherit cargoArtifacts;
         });
       in

@@ -1,12 +1,7 @@
 use crate::types;
 use crate::util::node_text;
 use crate::via_match;
-use phf::phf_map;
-
-static REPLACEMENTS: phf::Map<&'static str, &'static str> = phf_map! {
-    "alsaSupport" => "with_alsa",
-    "enableAlsa" => "with_alsa",
-};
+use crate::lamentation::RFC0169_autogen::REPLACEMENTS;
 
 via_match!(RFC0169, |m, content| {
     let deprecated = &m.captures[1].node;
