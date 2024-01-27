@@ -2,6 +2,7 @@ use anyhow;
 use std::sync::{Arc, Mutex};
 use tree_sitter as ts;
 use tree_sitter_nix as nix;
+use std::collections::HashSet;
 
 mod lamentation;
 mod types;
@@ -59,8 +60,17 @@ fn main() -> anyhow::Result<()> {
                     Ok(content) => {
                         // None is only returned on misuse or timeout.
                         let tree = parser.parse(&content, None).unwrap();
-
                         let mut laments = vec![];
+
+                        let mut skip: HashSet<String> = HashSet::new();
+                        if content.starts_with(b"# noqa: ") {
+                            let sb = content.iter().take_while(|c| *(*c) != b'\n').map(|c| *c).collect();
+                            let s = String::from_utf8(sb).unwrap();
+                            for x in s.split_whitespace().skip(2) {
+                                skip.insert(String::from(x));
+                            }
+                        }
+
                         for w in workers.iter() {
                             laments.extend(w.lament(&tree, &content));
                         }
@@ -69,6 +79,10 @@ fn main() -> anyhow::Result<()> {
                             let mut errcode = errcode.lock().unwrap();
                             *errcode = 1;
                             for e in laments {
+                                if skip.contains(&format!("{:?}", e.kind)) {
+                                    continue;
+                                }
+
                                 println!(
                                     "{}:{}:{}: {:?} {}",
                                     &fname, e.line, e.column, e.kind, e.message
